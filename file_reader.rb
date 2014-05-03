@@ -1,4 +1,3 @@
-require 'pg'
 require 'nokogiri'
 require 'open-uri'
 

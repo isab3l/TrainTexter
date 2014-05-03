@@ -1,24 +1,3 @@
-class StatusGather #parse data & gather train status
-
-end
-
-DATABASE_NAME = 'TextSchedule'
-
-class TextSchedule #database of times/trains/user phone #s
-
-  def initialize
-    require 'pg'
-
-    ignore_errors = "/dev/null 2>&1"
-    `createdb #{DATABASE_NAME} #{ignore_errors}`
-
-    @db_connection = PG.connect( dbname: DATABASE_NAME )
-    @db_connection.exec("drop table if exists users;")
-    @db_connection.exec("drop table if exists trains;")
-    @db_connection.exec("drop table if exists times;")
-    @db_connection.exec("drop table if exists users_times;")
-    @db_connection.exec("drop table if exists users_trains;")
-
     #TABLE USERS:
     #--------------------------
     @db_connection.exec(<<-SQL
@@ -81,10 +60,10 @@ class TextSchedule #database of times/trains/user phone #s
     p results.values
 
 
-    #TABLE TIMES:
+    #TABLE NOTIFICATION_TIMES:
     #---------------------------------------
     @db_connection.exec(<<-SQL
-      create table times
+      create table notification_times
       (
         time_id    serial primary key,
         time       time
@@ -95,7 +74,7 @@ class TextSchedule #database of times/trains/user phone #s
     ["08:00","12:00","06:00","19:00","14:00","02:00"].each do |record|
 
       @db_connection.exec(<<-SQL
-        insert into times(time)
+        insert into notification_times (time)
         values ( '#{record}' );
         SQL
       )
@@ -103,7 +82,7 @@ class TextSchedule #database of times/trains/user phone #s
     end
 
     results = @db_connection.exec(<<-SQL
-      select * from times ;
+      select * from notification_times ;
       SQL
       )
     p results.values
@@ -113,11 +92,11 @@ class TextSchedule #database of times/trains/user phone #s
     #TABLE USERS_TIMES:
     #---------------------------------------
     @db_connection.exec(<<-SQL
-      create table users_times
+      create table users_notification_times
       (
-        user_time_id serial primary key,
-        user_id      int,
-        time_id      int
+        user_notification_time_id serial primary key,
+        user_id                   int,
+        notification_time_id      int
       );
       SQL
     )
@@ -125,15 +104,15 @@ class TextSchedule #database of times/trains/user phone #s
     6.times do
       user_id = (1..4).to_a.sample
       time_id = (1..6).to_a.sample
-      @db_connection.exec("
-        insert into users_times(user_id, time_id)
-        values (#{user_id},#{time_id} );
-        "
+      @db_connection.exec(<<-SQL
+        insert into users_notification_times (user_id, time_id)
+        values ('#{user_id}', '#{time_id}' );
+        SQL
       )
     end
 
     results = @db_connection.exec(<<-SQL
-      select * from users_times ;
+      select * from users_notification_times ;
       SQL
       )
     p results.values
@@ -155,10 +134,10 @@ class TextSchedule #database of times/trains/user phone #s
     7.times do
       user_id = (1..4).to_a.sample
       train_id = (1..10).to_a.sample
-      @db_connection.exec("
+      @db_connection.exec(<<-SQL
         insert into users_trains(user_id, train_id)
-        values (#{user_id},#{train_id} );
-        "
+        values ('#{user_id}', '#{train_id}' );
+        SQL
       )
     end
 
@@ -189,8 +168,3 @@ end
 
 test = TextSchedule.new
 p test.test_db_query
-
-class TextSender #sends texts to user
-
-end
-

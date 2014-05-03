@@ -1,9 +1,8 @@
-require_relative 'mta_status_db.rb'
 require 'twilio-ruby'
 require 'pg'
- 
+
 class TwilioIntegration
- 
+
   ACCOUNT_SID = "AC49de56d245eb573da3703df2cfde338a"
   AUTH_TOKEN = "e77802c0ce3871a5cdd5da29f6eb17ad"
   FROM = "+19176526862"
@@ -19,6 +18,7 @@ class TwilioIntegration
       sign_in.account.messages.create(
         :from => FROM,
         :to => phone_number,
+        # seperate method for determining body
         :body => "Hey #{name}, The #{@train} is running with #{@status}!"
         )
       puts "Sent message to #{name}"
@@ -37,18 +37,6 @@ class TwilioIntegration
 
   def self.view_receivers
     @receivers
-  end
-
-  def self.get_receivers
-  end
-
-  def self.get_name
-  end
-
-  def self.get_number
-  end
-
-  def self.get_train
   end
 
 end
