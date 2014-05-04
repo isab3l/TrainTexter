@@ -1,4 +1,4 @@
-require_relative 'file_reader.rb'
+require_relative 'train_file_reader.rb'
 require_relative 'database_connect.rb'
 require 'pg'
 
@@ -34,7 +34,7 @@ class TrainTableUpdate
 		db_connection.exec(<<-SQL
 		  create table #{table_name}
 		  (
-		  	id				serial primary key,
+		  	train_id				serial primary key,
 		    line  		varchar(255),
 		    status 		varchar(255)
 		  );
@@ -43,17 +43,17 @@ class TrainTableUpdate
 	end
 
 	def insert_data
-		FileReader.parse.each do |train, cur_status|
+		TrainFileReader.parse.each do |train, cur_status|
 			db_connection.exec(<<-SQL
-					insert into #{table_name} (line, status)
-					values ('#{train}','#{cur_status}');
+				insert into #{table_name} (line, status)
+				values ('#{train}','#{cur_status}');
 				SQL
 				)
 		end
 	end
 
 	def display_data
-		results = db_connection.exec(<<-SQL
+		db_connection.exec(<<-SQL
 			select * from #{table_name};
 		SQL
 		)

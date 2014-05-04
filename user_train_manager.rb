@@ -1,3 +1,7 @@
+require_relative = 'user_retriever.rb'
+require_relative = 'train_retriever.rb'
+require_relative = 'send_user_notification.rb'
+
 
 class UserTrainManager
 
@@ -14,8 +18,8 @@ class UserTrainManager
     end
   end
 
-  def send_status_notifictation(user, trains = [])
-
+  def send_status_notifictation(user, train, status)
+    SendUserNotification.new_message(user, train, status)
   end
 
 end

@@ -1,4 +1,7 @@
-
+require_relative 'user_numbers_table_update.rb'
+require_relative 'user_notification_times_table_update.rb'
+require_relative 'user_trains_table_update.rb'
+require 'pg'
 
 class UserRetriever
   include DatabaseConnect
@@ -8,14 +11,15 @@ class UserRetriever
   end
 
   def initialize
-    # establish the database connection
+    database_initializer
+    @db_connection = database_connection
   end
 
   def determine_users
     determine_notification_user(determine_notification_time)
   end
 
-  def determine_notification_time
+  def determine_notification_times
     # find notification times that are >= current time
     # order them by time asc
     # select the first
