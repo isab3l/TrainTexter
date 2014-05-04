@@ -1,10 +1,10 @@
-require_relative 'user_numbers_table_update.rb'
-require_relative 'user_notification_times_table_update.rb'
-require_relative 'user_trains_table_update.rb'
+require_relative 'database_connect.rb'
 require 'pg'
 
 class UserRetriever
   include DatabaseConnect
+
+  attr_reader :db_connection
 
   def self.get_users
     new.determine_users
@@ -16,18 +16,27 @@ class UserRetriever
   end
 
   def determine_users
-    determine_notification_user(determine_notification_time)
+    determine_notification_user(determine_next_notification_time_id)
   end
 
-  def determine_notification_times
-    # find notification times that are >= current time
-    # order them by time asc
-    # select the first
+  private
+
+  def determine_next_notification_time_id
+    db_connection.exec(<<-SQL
+    select * from notification_times
+    where extract(hour from to_timestamp(notification_time, 'HH24'))
+        >= extract(hour from current_time);
+    SQL
+    ).first.values[0]
   end
 
   def determine_notification_user(notification_time)
-    # go into the join table to match notification time id with user id
-    # retreive all users(id, name, phone) with determined notification time
+  db_connection.exec(<<-SQL
+    select users.id, users.name, users.phone from users
+    join users_times on users.id = users_times.user_id
+    where users_times.notification_time_id = #{notification_time}
+    SQL
+    )
   end
 
 end

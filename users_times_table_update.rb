@@ -1,8 +1,7 @@
-require_relative 'user_trains_reader.rb'
 require_relative 'database_connect.rb'
 require 'pg'
 
-class UserTrainsTableUpdate
+class UsersTimesTableUpdate
   include DatabaseConnect
 
   attr_reader :db_connection, :table_name
@@ -14,7 +13,7 @@ class UserTrainsTableUpdate
   def initialize
     database_initializer
     @db_connection = database_connection
-    @table_name = 'user_trains'
+    @table_name = 'users_times'
   end
 
   def perform_update
@@ -34,23 +33,28 @@ class UserTrainsTableUpdate
     db_connection.exec(<<-SQL
       create table #{table_name}
       (
-        user_trains_id    serial primary key,
-        name                    varchar(255),
-        train      varchar(200)
+        id                        serial primary key,
+        user_id                   int,
+        notification_time_id      int
       );
       SQL
     )
   end
 
   def insert_data
-    UserTrainsReader.read_user_trains.each do |user_name, trains|
-      trains.each do |train_name|
-        @db_connection.exec(<<-SQL
-          insert into #{table_name} (name, train)
-          values ('#{user_name}','#{train_name}')
-          SQL
-          )
-      end
+    [%w[1 2],  # =>  'Alex' '8:00'
+     %w[1 8],  # =>  'Alex' '8:00'
+     %w[2 3],  # =>  'Mario' '10:00'
+     %w[2 6],  # =>  'Mario' '16:00'
+     %w[3 5],  # =>  'Isabel' '8:00'
+     %w[3 4],  # =>  'Isabel' '12:00'
+     %w[4 1],  # =>  'Zach' '6:00'
+     %w[4 7]].each do |user, time|  # => 'Zach' '18:00'
+      @db_connection.exec(<<-SQL
+        insert into #{table_name} (user_id, notification_time_id)
+        values ('#{user}','#{time}')
+        SQL
+        )
     end
   end
 

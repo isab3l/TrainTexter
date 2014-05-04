@@ -2,7 +2,7 @@ require_relative 'train_file_reader.rb'
 require_relative 'database_connect.rb'
 require 'pg'
 
-class TrainTableUpdate
+class TrainsTableUpdate
 	include DatabaseConnect
 
 	attr_reader :db_connection, :table_name
@@ -34,7 +34,7 @@ class TrainTableUpdate
 		db_connection.exec(<<-SQL
 		  create table #{table_name}
 		  (
-		  	train_id				serial primary key,
+		  	id				serial primary key,
 		    line  		varchar(255),
 		    status 		varchar(255)
 		  );

@@ -1,11 +1,10 @@
-require_relative 'user_trains_table_update.rb'
-require_relative 'trains_table_update.rb'
+require_relative 'database_connect.rb'
 require 'pg'
 
 class TrainRetriever
   include DatabaseConnect
 
-  attr_reader :user_id
+  attr_reader :db_connection, :user_id
 
   def self.get_trains(user_id)
     new(user_id).determine_trains_for_user
@@ -18,11 +17,11 @@ class TrainRetriever
   end
 
   def determine_trains_for_user
-    # go in user-train table and match user_id with train_id
-    # find trains that correspond to train_id
     db_connection.exec(<<-SQL
-      select * from 'user-trains';
-    SQL
+      select line, status from trains
+      join users_trains on trains.id = users_trains.train_id
+      where users_trains.user_id = #{user_id}
+      SQL
     )
   end
 

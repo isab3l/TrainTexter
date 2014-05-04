@@ -1,8 +1,7 @@
-require_relative 'user_time_reader.rb'
 require_relative 'database_connect.rb'
 require 'pg'
 
-class UserNotificationTimesTableUpdate
+class NotificationTimesTableUpdate
   include DatabaseConnect
 
   attr_reader :db_connection, :table_name
@@ -14,7 +13,7 @@ class UserNotificationTimesTableUpdate
   def initialize
     database_initializer
     @db_connection = database_connection
-    @table_name = 'user_notification_times'
+    @table_name = 'notification_times'
   end
 
   def perform_update
@@ -34,23 +33,21 @@ class UserNotificationTimesTableUpdate
     db_connection.exec(<<-SQL
       create table #{table_name}
       (
-        user_notification_time_id     serial primary key,
-        name                          varchar(255),
-        notification_time             varchar(200)
+        id                    serial primary key,
+        notification_time     varchar(255)
       );
       SQL
     )
   end
 
   def insert_data
-    UserTimeReader.read_user_notifcation_times.each do |user_name, times|
-      times.each do |time|
-        @db_connection.exec(<<-SQL
-          insert into #{table_name} (name, notification_time)
-          values ('#{user_name}','#{time}')
-          SQL
-          )
-      end
+    ["06:00","08:00","10:00","12:00",
+    "14:00","16:00", "18:00", "20:00"].each do |time|
+      @db_connection.exec(<<-SQL
+        insert into #{table_name} (notification_time)
+        values ('#{time}')
+        SQL
+        )
     end
   end
 
