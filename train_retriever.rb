@@ -18,7 +18,7 @@ class TrainRetriever
 
   def determine_trains_for_user
     db_connection.exec(<<-SQL
-      select line, status from trains
+      select train_name, status from trains
       join users_trains on trains.id = users_trains.train_id
       where users_trains.user_id = #{user_id}
       SQL

@@ -34,9 +34,9 @@ class TrainsTableUpdate
 		db_connection.exec(<<-SQL
 		  create table #{table_name}
 		  (
-		  	id				serial primary key,
-		    line  		varchar(255),
-		    status 		varchar(255)
+		  	id					serial primary key,
+		    train_name  varchar(255),
+		    status 			varchar(255)
 		  );
 		  SQL
 		)
@@ -45,7 +45,7 @@ class TrainsTableUpdate
 	def insert_data
 		TrainFileReader.parse.each do |train, cur_status|
 			db_connection.exec(<<-SQL
-				insert into #{table_name} (line, status)
+				insert into #{table_name} (train_name, status)
 				values ('#{train}','#{cur_status}');
 				SQL
 				)

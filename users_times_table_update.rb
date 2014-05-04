@@ -42,14 +42,15 @@ class UsersTimesTableUpdate
   end
 
   def insert_data
-    [%w[1 2],  # =>  'Alex' '8:00'
-     %w[1 8],  # =>  'Alex' '8:00'
+    [%w[1 2],  # =>  'Alex' '08:00'
+     %w[1 8],  # =>  'Alex' '20:00'
      %w[2 3],  # =>  'Mario' '10:00'
      %w[2 6],  # =>  'Mario' '16:00'
-     %w[3 5],  # =>  'Isabel' '8:00'
+     %w[3 5],  # =>  'Isabel' '08:00'
      %w[3 4],  # =>  'Isabel' '12:00'
-     %w[4 1],  # =>  'Zach' '6:00'
-     %w[4 7]].each do |user, time|  # => 'Zach' '18:00'
+     %w[4 1],  # =>  'Zach' '06:00'
+     %w[4 7],  # => 'Zach' '18:00'
+     %w[5 6]].each do |user, time|  # => 'Connor' '16:00'
       @db_connection.exec(<<-SQL
         insert into #{table_name} (user_id, notification_time_id)
         values ('#{user}','#{time}')

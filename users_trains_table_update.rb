@@ -49,7 +49,8 @@ class UsersTrainsTableUpdate
      %w[3 5],  # =>  'Isabel' 'BDFM'
      %w[4 2],  # =>  'Zach' '456'
      %w[4 5],  # =>  'Zach' 'BDFM'
-     %w[4 8]].each do |user, train|  # => 'Zach' 'L'
+     %w[4 8], # => 'Zach' 'L'
+     %w[5 5]].each do |user, train| # =>  'Connor' 'BDFM'
       @db_connection.exec(<<-SQL
         insert into #{table_name} (user_id, train_id)
         values ('#{user}','#{train}')
