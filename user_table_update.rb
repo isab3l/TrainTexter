@@ -43,9 +43,9 @@ class UsersTableUpdate
 
   def insert_data
     [%w[Alex +16784290938],
-     %w[Mario +16262038010],
-     %w[Isabel +16262038010],
-     %w[Zach +16262038010],
+     %w[Mario +18185364199],
+     %w[Isabel +17724869106],
+     %w[Zach +12127293997],
      %w[Connor +15416909264]].each do |user_name, number|
       @db_connection.exec(<<-SQL
         insert into #{table_name} (name, phone)
